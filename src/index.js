@@ -1,27 +1,21 @@
 import './style.css';
 
-function playSound(e) {
-    const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
-    const key = document.querySelector(`.key[data-key="${e.keyCode}"]`);
 
-    if(!audio) {
-        return;
-    }
-    audio.currentTime = 0;
-    audio.play();
-    key.classList.add('playing');
+const secondHand = document.querySelector('.second-hand');
+const minHand = document.querySelector('.min-hand');
+const hourHand = document.querySelector('.hour-hand');
+function setDate() {
+    const now = new Date();
+    const seconds = now.getSeconds();
+    const minutes = now.getMinutes();
+    const hours = now.getHours();
+    const secondsDegrees = (seconds / 60) * 360 + 90;
+    const minutesDegrees = (minutes / 60) * 360 + 90;
+    const hoursDegrees = (hours / 12) * 360 + 90;
+    secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+    minHand.style.transform = `rotate(${minutesDegrees}deg)`;
+    hourHand.style.transform = `rotate(${hoursDegrees}deg)`;
+
 }
 
-function removeTransition(e) {
-    if(e.propertyName !== 'transform') {
-        return;
-    }
-    this.classList.remove('playing');
-}
-
-const keys = document.querySelectorAll('.key');
-keys.forEach(key => {
-    key.addEventListener('transitionend', removeTransition)
-});
-
-window.addEventListener('keydown', playSound);
+setInterval(setDate, 1000);
