@@ -1,42 +1,46 @@
-import './style.css';
+const canvas = document.querySelector('#draw');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+ctx.strokeStyle = '#BADA55';
+ctx.lineJoin = 'round';
+ctx.lineCap = 'round';
+ctx.lineWidth = 100;
+// ctx.globalCompositeOperation = 'multiply';
 
-const people = [
-    { name: 'Wes', year: 1988 },
-    { name: 'Kait', year: 1986 },
-    { name: 'Irv', year: 1970 },
-    { name: 'Lux', year: 2015 }
-];
+let isDrawing = false;
+let lastX = 0;
+let lastY = 0;
+let hue = 0;
+let direction = true;
 
-const comments = [
-    { text: 'Love this!', id: 523423 },
-    { text: 'Super good', id: 823423 },
-    { text: 'You are the best', id: 2039842 },
-    { text: 'Ramen is my fav food ever', id: 123523 },
-    { text: 'Nice Nice Nice!', id: 542328 }
-];
+function draw(e) {
+    if(!isDrawing) return;
+    ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+    hue++;
+    if( hue >= 360) {
+        hue = 0;
+    }
+    if(ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+        direction = !direction;
+    }
+    if(direction) {
+        ctx.lineWidth++;
+    } else {
+        ctx.lineWidth--;
+    }
+}
 
-const currentYear = new Date().getFullYear();
+canvas.addEventListener('mousedown', (e) => {
+    isDrawing = true;
+    [lastX, lastY] = [e.offsetX, e.offsetY];
 
-// Some and Every Checks
-// Array.prototype.some() // is at least one person 19 or older?
-const hasAdults = people.some(person => currentYear - person.year >= 19);
-
-// Array.prototype.every() // is everyone 19 or older?
-const onlyAdults = people.every(person => currentYear - person.year >= 19);
-
-// Array.prototype.find()
-// Find is like filter, but instead returns just the one you are looking for
-// find the comment with the ID of 823423
-const hasId = comments.find(elem => elem.id === 823423);
-
-// Array.prototype.findIndex()
-// Find the comment with this ID
-// delete the comment with the ID of 823423
-const commentIndex = comments.findIndex(elem => elem.id === 823423);
-comments.splice(commentIndex, 1);
-
-// not modifying comments array
-// const secondOption = [
-//     ...comments.slice(0, commentIndex),
-//     ...comments.slice(commentIndex + 1)
-// ];
+});
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', () => isDrawing = false);
+canvas.addEventListener('mouseout', () => isDrawing = false);
