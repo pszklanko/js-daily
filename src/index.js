@@ -1,46 +1,58 @@
-const canvas = document.querySelector('#draw');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-ctx.strokeStyle = '#BADA55';
-ctx.lineJoin = 'round';
-ctx.lineCap = 'round';
-ctx.lineWidth = 100;
-// ctx.globalCompositeOperation = 'multiply';
+const dogs = [{ name: 'Snickers', age: 2 }, { name: 'hugo', age: 8 }];
 
-let isDrawing = false;
-let lastX = 0;
-let lastY = 0;
-let hue = 0;
-let direction = true;
-
-function draw(e) {
-    if(!isDrawing) return;
-    ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
-    ctx.beginPath();
-    ctx.moveTo(lastX, lastY);
-    ctx.lineTo(e.offsetX, e.offsetY);
-    ctx.stroke();
-    [lastX, lastY] = [e.offsetX, e.offsetY];
-    hue++;
-    if( hue >= 360) {
-        hue = 0;
-    }
-    if(ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
-        direction = !direction;
-    }
-    if(direction) {
-        ctx.lineWidth++;
-    } else {
-        ctx.lineWidth--;
-    }
+function makeGreen() {
+    const p = document.querySelector('p');
+    p.style.color = '#BADA55';
+    p.style.fontSize = '50px';
 }
 
-canvas.addEventListener('mousedown', (e) => {
-    isDrawing = true;
-    [lastX, lastY] = [e.offsetX, e.offsetY];
+const p = document.querySelector('p');
+p.addEventListener('click', makeGreen);
 
-});
-canvas.addEventListener('mousemove', draw);
-canvas.addEventListener('mouseup', () => isDrawing = false);
-canvas.addEventListener('mouseout', () => isDrawing = false);
+// Regular
+console.log('aaa');
+
+// Interpolated
+console.log('Hello  %s string', 'asasa');
+
+// Styled
+console.log('%c I am text', 'font-size: 50px');
+
+// warning!
+console.warn('ACHTUNG!');
+
+// Error :|
+console.error('ERRRROR');
+
+// Info
+console.info('Info');
+
+// Testing
+console.assert(1 !== 1, 'That is wrong');
+
+// clearing
+console.clear();
+
+// Viewing DOM Elements
+console.dir(p);
+
+// Grouping together
+dogs.forEach(dog => {
+    console.group(`${dog.name}`); //groupCollapsed
+    console.log(`this is ${dog.name}`);
+    console.log(`${dog.name} is ${dog.age} years old`);
+    console.groupEnd(`${dog.name}`);
+})
+// counting
+console.count('test');
+console.count('test');
+console.count('test');
+console.count('test');
+
+// timing
+console.time('fetching data');
+/// things to do
+console.timeEnd('fetching data');
+
+// table
+console.table(dogs);
