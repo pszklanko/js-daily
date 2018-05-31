@@ -1,34 +1,48 @@
-import './style.css';
+// start with strings, numbers and booleans
+let age = 100;
+let age2 = age;
+console.log(age, age2); // 100 100
+let age = 200;
+console.log(age, age2); // 200 100
+// Let's say we have an array
+const players = ['Wes', 'Sarah', 'Ryan', 'Poppy'];
 
-function debounce(func, wait = 20, immediate = true) {
-    var timeout;
-    return function() {
-        var context = this, args = arguments;
-        var later = function() {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
-    };
-}
+// and we want to make a copy of it.
+const team = players;
+// You might think we can just do something like this:
+team[3] = 'abc';
+// however what happens when we update that array?
 
-const sliderImages = document.querySelectorAll('.slide-in');
+// now here is the problem!
 
-function checkSlide(e) {
-    sliderImages.forEach(sliderImage => {
-        const slideInAt = (window.scrollY + window.innerHeight) - sliderImage.height / 2;
-        const imageBottom = sliderImage.offsetTop + sliderImage.height;
-        const isHalfShown = slideInAt > sliderImage.offsetTop;
-        const isNotScrolledPast = window.scrollY < imageBottom;
-        if(isHalfShown && isNotScrolledPast) {
-            sliderImage.classList.add('active');
-        } else {
-            sliderImage.classList.remove('active');
-        }
-    })
-}
+// oh no - we have edited the original array too!
 
-window.addEventListener('scroll', debounce(checkSlide));
+// Why? It's because that is an array reference, not an array copy. They both point to the same array!
+
+// So, how do we fix this? We take a copy instead!
+const team2 = players.slice();
+const team3 = [].concat(players);
+const team4 = [...players];
+const team5 = Array.from(players);
+
+// The same thing goes for objects, let's say we have a person object
+
+// with Objects
+const person = {
+    name: 'Wes Bos',
+    age: 80
+};
+
+// and think we make a copy:
+const captain = person;
+captain.age = 55;
+
+// how do we take a copy instead?
+const cap2 = Object.assign({}, person , {number: 99})
+
+// We will hopefully soon see the object ...spread
+const cap3 = {...person}
+
+// cheat
+const dev2 = JSON.parse(JSON.stringify(person)); //deep copy if object in object
+// Things to note - this is only 1 level deep - both for Arrays and Objects. lodash has a cloneDeep method, but you should think twice before using it.
